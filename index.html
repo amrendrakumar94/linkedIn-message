@@ -80,6 +80,7 @@
 
   <input type="text" id="name" placeholder="Referrer Name" />
   <input type="text" id="role" placeholder="Role" />
+  <input type="text" id="jobId" placeholder="Job ID" />
   <input type="text" id="company" placeholder="Company Name" />
   <input type="text" id="resume" placeholder="Resume Link" />
 
@@ -103,12 +104,13 @@
   function generateMessage() {
     const name = document.getElementById("name").value;
     const role = document.getElementById("role").value;
+    const jobId = document.getElementById("jobId").value;
     const company = document.getElementById("company").value;
     const resume = document.getElementById("resume").value;
 
     const message = `Hi ${name},
 
-I’m interested in the ${role} role at ${company}. Could you please refer me or share the referral link to apply?
+I’m interested in the ${role} role at ${company} (Job ID: ${jobId}). Could you please refer me or share the referral link to apply?
 Here’s my resume: ${resume}
 
 Thanks!`;
@@ -137,6 +139,7 @@ Thanks!`;
     const entry = {
       name: name.value,
       role: role.value,
+      jobId: jobId.value,
       company: company.value,
       resume: resume.value,
       message: output.value
@@ -164,6 +167,7 @@ Thanks!`;
 
       div.innerHTML = `
         <b>${item.name}</b> | ${item.role} @ ${item.company}
+        <br/><small>Job ID: ${item.jobId || "N/A"}</small>
         <br/><small>${item.resume}</small>
         <p>${item.message}</p>
         <div class="history-actions">
@@ -181,6 +185,7 @@ Thanks!`;
     const item = getHistory()[index];
     name.value = item.name;
     role.value = item.role;
+    jobId.value = item.jobId || "";
     company.value = item.company;
     resume.value = item.resume;
     output.value = item.message;
