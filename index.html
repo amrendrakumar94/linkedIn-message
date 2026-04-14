@@ -2,113 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Message Generator</title>
+  <title>Referral Message Generator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f7fb;
+      background: #f4f6f8;
       margin: 0;
       padding: 20px;
     }
     .container {
-      max-width: 700px;
+      max-width: 600px;
       margin: auto;
-      background: white;
+      background: #fff;
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     h2 {
       text-align: center;
     }
-    input, select, textarea {
+    input {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
+      margin: 8px 0;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      font-size: 14px;
     }
     button {
       width: 100%;
-      padding: 12px;
-      background: #4f46e5;
-      color: white;
+      padding: 10px;
+      margin-top: 10px;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      border-radius: 6px;
+      background: #007bff;
+      color: white;
       font-size: 16px;
+      cursor: pointer;
     }
     button:hover {
-      background: #4338ca;
+      background: #0056b3;
     }
-    .output {
-      margin-top: 20px;
-      padding: 15px;
-      background: #f1f5f9;
-      border-radius: 8px;
-      white-space: pre-wrap;
-    }
-    .copy-btn {
-      margin-top: 10px;
-      background: #10b981;
+    textarea {
+      width: 100%;
+      height: 120px;
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      resize: none;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Message Generator</h2>
 
-    <label>Recipient Name</label>
-    <input type="text" id="name" placeholder="e.g. Pawan" />
+<div class="container">
+  <h2>Referral Message Generator</h2>
 
-    <label>Company Name</label>
-    <input type="text" id="company" placeholder="e.g. Autodesk" />
+  <input type="text" id="name" placeholder="Referrer Name" />
+  <input type="text" id="role" placeholder="Role" />
+  <input type="text" id="company" placeholder="Company Name" />
+  <input type="text" id="resume" placeholder="Resume Link" />
 
-    <label>Role</label>
-    <input type="text" id="role" placeholder="e.g. Software Engineer" />
+  <button onclick="generateMessage()">Generate Message</button>
+  <button onclick="copyMessage()">Copy Message</button>
 
-    <label>Resume Link</label>
-    <input type="text" id="resume" placeholder="Paste your resume link" />
+  <textarea id="output" placeholder="Generated message will appear here..."></textarea>
+</div>
 
-    <label>Message Type</label>
-    <select id="type">
-      <option value="referral">Referral</option>
-      <option value="hiring">Hiring Team</option>
-    </select>
+<script>
+  function generateMessage() {
+    const name = document.getElementById("name").value;
+    const role = document.getElementById("role").value;
+    const company = document.getElementById("company").value;
+    const resume = document.getElementById("resume").value;
 
-    <button onclick="generateMessage()">Generate Message</button>
+    const message = `Hi ${name},
 
-    <div id="output" class="output"></div>
+I’m interested in the ${role} role at ${company}. Could you please refer me or share the referral link to apply?
+Here’s my resume: ${resume}
 
-    <button class="copy-btn" onclick="copyMessage()">Copy Message</button>
-  </div>
+Thanks!`;
 
-  <script>
-    function generateMessage() {
-      const name = document.getElementById('name').value;
-      const company = document.getElementById('company').value;
-      const role = document.getElementById('role').value;
-      const resume = document.getElementById('resume').value;
-      const type = document.getElementById('type').value;
+    document.getElementById("output").value = message;
+  }
 
-      let message = '';
+  function copyMessage() {
+    const output = document.getElementById("output");
+    output.select();
+    document.execCommand("copy");
+    alert("Message copied!");
+  }
+</script>
 
-      if (type === 'referral') {
-        message = `Hi ${name}, I've applied for the ${role} role at ${company} and I’d love to be considered - here’s my resume in case that helps you forward: ${resume}\n\nThanks!`;
-      } else {
-        message = `Hi ${name}, I've applied for the ${role} role at ${company} and wanted to put myself on your radar. I’d love to be considered - here’s my resume in case that helps: ${resume}\n\nThanks!`;
-      }
-
-      document.getElementById('output').innerText = message;
-    }
-
-    function copyMessage() {
-      const text = document.getElementById('output').innerText;
-      navigator.clipboard.writeText(text);
-      alert('Copied to clipboard!');
-    }
-  </script>
 </body>
 </html>
