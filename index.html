@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Message Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #4338ca;
+    }
+    .output {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+    .copy-btn {
+      margin-top: 10px;
+      background: #10b981;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Message Generator</h2>
+
+    <label>Recipient Name</label>
+    <input type="text" id="name" placeholder="e.g. Pawan" />
+
+    <label>Company Name</label>
+    <input type="text" id="company" placeholder="e.g. Autodesk" />
+
+    <label>Role</label>
+    <input type="text" id="role" placeholder="e.g. Software Engineer" />
+
+    <label>Resume Link</label>
+    <input type="text" id="resume" placeholder="Paste your resume link" />
+
+    <label>Message Type</label>
+    <select id="type">
+      <option value="referral">Referral</option>
+      <option value="hiring">Hiring Team</option>
+    </select>
+
+    <button onclick="generateMessage()">Generate Message</button>
+
+    <div id="output" class="output"></div>
+
+    <button class="copy-btn" onclick="copyMessage()">Copy Message</button>
+  </div>
+
+  <script>
+    function generateMessage() {
+      const name = document.getElementById('name').value;
+      const company = document.getElementById('company').value;
+      const role = document.getElementById('role').value;
+      const resume = document.getElementById('resume').value;
+      const type = document.getElementById('type').value;
+
+      let message = '';
+
+      if (type === 'referral') {
+        message = `Hi ${name}, I've applied for the ${role} role at ${company} and I’d love to be considered - here’s my resume in case that helps you forward: ${resume}\n\nThanks!`;
+      } else {
+        message = `Hi ${name}, I've applied for the ${role} role at ${company} and wanted to put myself on your radar. I’d love to be considered - here’s my resume in case that helps: ${resume}\n\nThanks!`;
+      }
+
+      document.getElementById('output').innerText = message;
+    }
+
+    function copyMessage() {
+      const text = document.getElementById('output').innerText;
+      navigator.clipboard.writeText(text);
+      alert('Copied to clipboard!');
+    }
+  </script>
+</body>
+</html>
