@@ -135,14 +135,20 @@ Thanks!`;
 
   function saveMessage() {
     const history = getHistory();
+    const nameInput = document.getElementById("name");
+    const roleInput = document.getElementById("role");
+    const jobIdInput = document.getElementById("jobId");
+    const companyInput = document.getElementById("company");
+    const resumeInput = document.getElementById("resume");
+    const outputInput = document.getElementById("output");
 
     const entry = {
-      name: name.value,
-      role: role.value,
-      jobId: jobId.value,
-      company: company.value,
-      resume: resume.value,
-      message: output.value
+      name: nameInput.value.trim(),
+      role: roleInput.value.trim(),
+      jobId: jobIdInput.value.trim(),
+      company: companyInput.value.trim(),
+      resume: resumeInput.value.trim(),
+      message: outputInput.value.trim()
     };
 
     if (editIndex !== null) {
@@ -164,12 +170,17 @@ Thanks!`;
     history.forEach((item, index) => {
       const div = document.createElement("div");
       div.className = "history-item";
+      const safeName = item.name || "Unknown";
+      const safeRole = item.role || "Unknown role";
+      const safeCompany = item.company || "Unknown company";
+      const safeResume = item.resume || "No resume link";
+      const safeMessage = item.message || "";
 
       div.innerHTML = `
-        <b>${item.name}</b> | ${item.role} @ ${item.company}
+        <b>${safeName}</b> | ${safeRole} @ ${safeCompany}
         <br/><small>Job ID: ${item.jobId || "N/A"}</small>
-        <br/><small>${item.resume}</small>
-        <p>${item.message}</p>
+        <br/><small>${safeResume}</small>
+        <p>${safeMessage}</p>
         <div class="history-actions">
           <button class="small-btn" onclick="editItem(${index})">Edit</button>
           <button class="small-btn delete-btn" onclick="deleteItem(${index})">Delete</button>
