@@ -11,7 +11,7 @@
       padding: 20px;
     }
     .container {
-      max-width: 600px;
+      max-width: 700px;
       margin: auto;
       background: #fff;
       padding: 20px;
@@ -21,35 +21,55 @@
     h2 {
       text-align: center;
     }
-    input {
+    input, textarea {
       width: 100%;
       padding: 10px;
       margin: 8px 0;
       border-radius: 6px;
       border: 1px solid #ccc;
     }
+    textarea {
+      height: 120px;
+      resize: none;
+    }
     button {
-      width: 100%;
       padding: 10px;
-      margin-top: 10px;
+      margin-top: 8px;
       border: none;
       border-radius: 6px;
       background: #007bff;
       color: white;
-      font-size: 16px;
       cursor: pointer;
     }
     button:hover {
       background: #0056b3;
     }
-    textarea {
-      width: 100%;
-      height: 120px;
-      margin-top: 15px;
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+    .history {
+      margin-top: 20px;
+    }
+    .history-item {
+      border: 1px solid #ddd;
       padding: 10px;
       border-radius: 6px;
-      border: 1px solid #ccc;
-      resize: none;
+      margin-bottom: 10px;
+      background: #fafafa;
+    }
+    .history-actions {
+      margin-top: 8px;
+      display: flex;
+      gap: 10px;
+    }
+    .small-btn {
+      padding: 5px 10px;
+      font-size: 12px;
+      background: #6c757d;
+    }
+    .delete-btn {
+      background: #dc3545;
     }
   </style>
 </head>
@@ -63,13 +83,23 @@
   <input type="text" id="company" placeholder="Company Name" />
   <input type="text" id="resume" placeholder="Resume Link" />
 
-  <button onclick="generateMessage()">Generate Message</button>
-  <button onclick="copyMessage()">Copy Message</button>
+  <div class="btn-group">
+    <button onclick="generateMessage()">Generate</button>
+    <button onclick="copyMessage()">Copy</button>
+    <button onclick="saveMessage()">Save</button>
+  </div>
 
-  <textarea id="output" placeholder="Generated message will appear here..."></textarea>
+  <textarea id="output" placeholder="Generated message..."></textarea>
+
+  <div class="history">
+    <h3>History</h3>
+    <div id="historyList"></div>
+  </div>
 </div>
 
 <script>
+  let editIndex = null;
+
   function generateMessage() {
     const name = document.getElementById("name").value;
     const role = document.getElementById("role").value;
@@ -90,8 +120,86 @@ Thanks!`;
     const output = document.getElementById("output");
     output.select();
     document.execCommand("copy");
-    alert("Message copied!");
+    alert("Copied!");
   }
+
+  function getHistory() {
+    return JSON.parse(localStorage.getItem("messages") || "[]");
+  }
+
+  function saveToStorage(data) {
+    localStorage.setItem("messages", JSON.stringify(data));
+  }
+
+  function saveMessage() {
+    const history = getHistory();
+
+    const entry = {
+      name: name.value,
+      role: role.value,
+      company: company.value,
+      resume: resume.value,
+      message: output.value
+    };
+
+    if (editIndex !== null) {
+      history[editIndex] = entry;
+      editIndex = null;
+    } else {
+      history.push(entry);
+    }
+
+    saveToStorage(history);
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const history = getHistory();
+    const container = document.getElementById("historyList");
+    container.innerHTML = "";
+
+    history.forEach((item, index) => {
+      const div = document.createElement("div");
+      div.className = "history-item";
+
+      div.innerHTML = `
+        <b>${item.name}</b> | ${item.role} @ ${item.company}
+        <br/><small>${item.resume}</small>
+        <p>${item.message}</p>
+        <div class="history-actions">
+          <button class="small-btn" onclick="editItem(${index})">Edit</button>
+          <button class="small-btn delete-btn" onclick="deleteItem(${index})">Delete</button>
+          <button class="small-btn" onclick="useItem(${index})">Use</button>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+  }
+
+  function editItem(index) {
+    const item = getHistory()[index];
+    name.value = item.name;
+    role.value = item.role;
+    company.value = item.company;
+    resume.value = item.resume;
+    output.value = item.message;
+    editIndex = index;
+  }
+
+  function deleteItem(index) {
+    const history = getHistory();
+    history.splice(index, 1);
+    saveToStorage(history);
+    renderHistory();
+  }
+
+  function useItem(index) {
+    const item = getHistory()[index];
+    output.value = item.message;
+  }
+
+  renderHistory();
 </script>
 
 </body>
