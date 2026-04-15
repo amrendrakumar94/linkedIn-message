@@ -40,6 +40,20 @@
       width: auto;
       margin: 0;
     }
+    .inline-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .inline-group input {
+      margin: 0;
+      flex: 1;
+    }
+    .inline-group button {
+      margin-top: 0;
+      white-space: nowrap;
+    }
     textarea {
       height: 120px;
       resize: none;
@@ -95,9 +109,13 @@
   <input type="text" id="jobId" placeholder="Job ID" />
   <input type="text" id="company" placeholder="Company Name" />
   <input type="text" id="resume" placeholder="Resume Link" />
+  <div class="inline-group">
+    <input type="text" id="defaultResume" placeholder="Default Resume Link" />
+    <button type="button" class="small-btn" onclick="saveDefaultResume()">Save Default Resume</button>
+  </div>
   <label class="checkbox-row">
     <input type="checkbox" id="useDefaultResume" />
-    Use default resume link (https://tinyurl.com/27hq6cxf)
+    Use saved default resume link
   </label>
 
   <div class="btn-group">
@@ -117,6 +135,7 @@
 
 <script>
   let editIndex = null;
+  const DEFAULT_RESUME_KEY = "defaultResumeLink";
 
   async function shortenUrl(url) {
     const trimmedUrl = url.trim();
@@ -145,7 +164,11 @@
     const jobId = document.getElementById("jobId").value;
     const company = document.getElementById("company").value;
     const useDefaultResume = document.getElementById("useDefaultResume").checked;
-    const defaultResumeLink = "https://tinyurl.com/27hq6cxf";
+    const defaultResumeLink = getDefaultResumeLink();
+    if (useDefaultResume && !defaultResumeLink) {
+      alert("No saved default resume link found. Please add and save one first.");
+      return;
+    }
     const resume = useDefaultResume ? defaultResumeLink : document.getElementById("resume").value;
     const shortResume = await shortenUrl(resume);
 
@@ -170,6 +193,23 @@
 
   function saveToStorage(data) {
     localStorage.setItem("messages", JSON.stringify(data));
+  }
+
+  function getDefaultResumeLink() {
+    return (localStorage.getItem(DEFAULT_RESUME_KEY) || "").trim();
+  }
+
+  function saveDefaultResume() {
+    const defaultResumeInput = document.getElementById("defaultResume");
+    const defaultResume = defaultResumeInput.value.trim();
+
+    if (!defaultResume) {
+      alert("Please enter a default resume link before saving.");
+      return;
+    }
+
+    localStorage.setItem(DEFAULT_RESUME_KEY, defaultResume);
+    alert("Default resume link saved.");
   }
 
   function saveMessage() {
@@ -266,10 +306,19 @@
   document.getElementById("output").addEventListener("input", updateCharacterCount);
   document.getElementById("useDefaultResume").addEventListener("change", (event) => {
     const resumeInput = document.getElementById("resume");
+    const defaultResumeLink = getDefaultResumeLink();
+
+    if (event.target.checked && !defaultResumeLink) {
+      alert("No saved default resume link found. Please add and save one first.");
+      event.target.checked = false;
+      return;
+    }
+
     if (event.target.checked) {
-      resumeInput.value = "https://tinyurl.com/27hq6cxf";
+      resumeInput.value = defaultResumeLink;
     }
   });
+  document.getElementById("defaultResume").value = getDefaultResumeLink();
   renderHistory();
   updateCharacterCount();
 </script>
