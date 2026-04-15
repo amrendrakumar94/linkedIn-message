@@ -172,7 +172,7 @@
     const resume = useDefaultResume ? defaultResumeLink : document.getElementById("resume").value;
     const shortResume = await shortenUrl(resume);
 
-    const rawMessage = `Hi ${name}, I’m interested in ${role} at ${company} (Job ID: ${jobId}). Could you please refer me or share the referral link? Resume: ${shortResume} Thanks!`;
+    const rawMessage = `Hi ${name}, I’m interested in ${role} role at ${company} (Job ID: ${jobId}). Could you please refer me or share the referral link? Resume: ${shortResume} Thanks!`;
     const message = fitToCharacterLimit(rawMessage, 300);
 
     const outputElement = document.getElementById("output");
