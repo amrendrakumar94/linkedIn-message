@@ -3,7 +3,7 @@
 This project now supports **both modes**:
 
 1. **Hosted web page mode** (e.g., GitHub Pages) for direct browser usage.
-2. **Chrome extension mode** for popup usage while a LinkedIn tab is open.
+2. **Chrome extension mode** for popup usage on any tab.
 
 ## What it does
 
@@ -23,9 +23,9 @@ This project now supports **both modes**:
 2. Enable **Developer mode** (top-right).
 3. Click **Load unpacked**.
 4. Select this folder: `linkedIn-message`.
-5. Pin the extension and open it while you're on a LinkedIn tab.
+5. Pin the extension and open it on any active tab.
 
 ## Extension-specific behavior
 
-- When running as an extension popup, it checks the active tab and enables generation only on `linkedin.com` tabs.
+- When running as an extension popup, it works on every tab (no LinkedIn-tab restriction).
 - In web mode (non-extension), LinkedIn-tab checks are skipped and it works as a normal message generator page.

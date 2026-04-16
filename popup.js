@@ -6,7 +6,7 @@ const generateCopyBtn = document.getElementById("generateCopyBtn");
 const tinyUrlCheckbox = document.getElementById("useTinyUrl");
 
 const STORAGE_KEY = "linkedinMessageForm";
-const hasChromeTabsApi = typeof chrome !== "undefined" && !!chrome.tabs?.query;
+const inExtension = typeof chrome !== "undefined" && !!chrome.runtime?.id;
 const hasChromeStorageApi = typeof chrome !== "undefined" && !!chrome.storage?.local;
 
 function setStatus(message, type = "") {
@@ -35,16 +35,6 @@ async function shortenUrl(url) {
 function buildMessage({ name, role, jobId, company, resume }) {
   const draft = `Hi ${name}, I’m interested in the ${role} role at ${company} (Job ID: ${jobId}). Could you please refer me or share the referral link? Resume: ${resume}. Thanks!`;
   return fitToCharacterLimit(draft, 300);
-}
-
-async function isLinkedInTabActive() {
-  if (!hasChromeTabsApi) {
-    return true;
-  }
-
-  const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  const url = activeTab?.url || "";
-  return url.includes("linkedin.com");
 }
 
 function getFormData() {
@@ -105,20 +95,10 @@ async function copyToClipboard(text) {
 }
 
 async function bootstrap() {
-  const linkedInTab = await isLinkedInTabActive();
-  const inExtension = hasChromeTabsApi;
-
   if (!inExtension) {
     tabHintEl.textContent = "Web mode detected (e.g., GitHub Pages). Generate and copy your message here.";
   } else {
-    tabHintEl.textContent = linkedInTab
-      ? "LinkedIn tab detected. Generate and copy your message in one click."
-      : "Switch to a LinkedIn tab to use this extension.";
-  }
-
-  if (inExtension && !linkedInTab) {
-    setStatus("LinkedIn tab not detected.", "warn");
-    generateCopyBtn.disabled = true;
+    tabHintEl.textContent = "Extension mode detected. Generate and copy your message from any tab.";
   }
 
   const savedData = await getStoredFormData();
@@ -128,12 +108,6 @@ async function bootstrap() {
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   setStatus("Generating message...");
-
-  const linkedInTab = await isLinkedInTabActive();
-  if (hasChromeTabsApi && !linkedInTab) {
-    setStatus("Please open a LinkedIn tab first.", "warn");
-    return;
-  }
 
   const data = getFormData();
   if (Object.entries(data).some(([key, value]) => key !== "useTinyUrl" && !value)) {
