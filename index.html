@@ -66,6 +66,11 @@
       gap: 6px;
     }
 
+    .required {
+      color: #dc2626;
+      margin-left: 2px;
+    }
+
     .field.full {
       grid-column: 1 / -1;
     }
@@ -119,6 +124,11 @@
     .checkbox-row input[type="checkbox"] {
       width: auto;
       margin: 0;
+      cursor: pointer;
+    }
+
+    .checkbox-row:hover {
+      color: #1f2937;
     }
 
     .btn-group {
@@ -168,6 +178,12 @@
       gap: 8px;
     }
 
+    .hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
     textarea {
       min-height: 140px;
       resize: vertical;
@@ -177,6 +193,12 @@
       color: var(--muted);
       font-size: 0.86rem;
       text-align: right;
+    }
+
+    .field-error {
+      border-color: var(--danger) !important;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.14) !important;
+      background: #fff7f7;
     }
 
     .history {
@@ -245,24 +267,24 @@
 
   <div class="grid">
     <div class="field">
-      <label for="name">Referrer name</label>
-      <input type="text" id="name" placeholder="e.g., Sarah" />
+      <label for="name">Referrer name<span class="required">*</span></label>
+      <input type="text" id="name" placeholder="e.g., Sarah" required />
     </div>
     <div class="field">
-      <label for="role">Role</label>
-      <input type="text" id="role" placeholder="e.g., Software Engineer" />
+      <label for="role">Role<span class="required">*</span></label>
+      <input type="text" id="role" placeholder="e.g., Software Engineer" required />
     </div>
     <div class="field">
-      <label for="jobId">Job ID</label>
-      <input type="text" id="jobId" placeholder="e.g., 123456" />
+      <label for="jobId">Job ID<span class="required">*</span></label>
+      <input type="text" id="jobId" placeholder="e.g., 123456" required />
     </div>
     <div class="field">
-      <label for="company">Company</label>
-      <input type="text" id="company" placeholder="e.g., LinkedIn" />
+      <label for="company">Company<span class="required">*</span></label>
+      <input type="text" id="company" placeholder="e.g., LinkedIn" required />
     </div>
     <div class="field full">
-      <label for="resume">Resume link</label>
-      <input type="text" id="resume" placeholder="https://..." />
+      <label for="resume">Resume link<span class="required">*</span></label>
+      <input type="text" id="resume" placeholder="https://..." required />
     </div>
 
     <div class="field full">
@@ -279,6 +301,7 @@
         <input type="checkbox" id="useTinyUrl" checked />
         Shorten resume URL with TinyURL
       </label>
+      <p class="hint">* Required fields</p>
     </div>
   </div>
 
@@ -289,8 +312,8 @@
   </div>
 
   <div class="output-wrap">
-    <label for="output">Generated message</label>
-    <textarea id="output" placeholder="Your generated message appears here..."></textarea>
+    <label for="output">Generated message<span class="required">*</span></label>
+    <textarea id="output" placeholder="Your generated message appears here..." required></textarea>
     <small id="charCount">0/300 characters</small>
   </div>
 
@@ -326,10 +349,11 @@
   }
 
   async function generateMessage() {
-    const name = document.getElementById("name").value;
-    const role = document.getElementById("role").value;
-    const jobId = document.getElementById("jobId").value;
-    const company = document.getElementById("company").value;
+    clearValidationStyles();
+    const name = document.getElementById("name").value.trim();
+    const role = document.getElementById("role").value.trim();
+    const jobId = document.getElementById("jobId").value.trim();
+    const company = document.getElementById("company").value.trim();
     const useDefaultResume = document.getElementById("useDefaultResume").checked;
     const useTinyUrl = document.getElementById("useTinyUrl").checked;
     const defaultResumeLink = getDefaultResumeLink();
@@ -337,7 +361,23 @@
       alert("No saved default resume link found. Please add and save one first.");
       return;
     }
-    const resume = useDefaultResume ? defaultResumeLink : document.getElementById("resume").value;
+    const resume = useDefaultResume ? defaultResumeLink : document.getElementById("resume").value.trim();
+    const requiredFields = [
+      { id: "name", label: "Referrer name", value: name },
+      { id: "role", label: "Role", value: role },
+      { id: "jobId", label: "Job ID", value: jobId },
+      { id: "company", label: "Company", value: company },
+      { id: "resume", label: "Resume link", value: resume }
+    ];
+
+    const missingFields = requiredFields.filter((field) => !field.value);
+    if (missingFields.length > 0) {
+      missingFields.forEach(({ id }) => document.getElementById(id).classList.add("field-error"));
+      const fieldNames = missingFields.map((field) => field.label).join(", ");
+      alert(`Please complete all required fields: ${fieldNames}.`);
+      return;
+    }
+
     const resumeLink = useTinyUrl ? await shortenUrl(resume) : resume.trim();
 
     const rawMessage = `Hi ${name}, I’m interested in ${role} role at ${company} (Job ID: ${jobId}). Could you please refer me or share the referral link? Resume: ${resumeLink} Thanks!`;
@@ -381,6 +421,7 @@
   }
 
   function saveMessage() {
+    clearValidationStyles();
     const history = getHistory();
     const nameInput = document.getElementById("name");
     const roleInput = document.getElementById("role");
@@ -398,6 +439,22 @@
       message: outputInput.value.trim()
     };
 
+    const requiredFields = [
+      { id: "name", label: "Referrer name", value: entry.name },
+      { id: "role", label: "Role", value: entry.role },
+      { id: "jobId", label: "Job ID", value: entry.jobId },
+      { id: "company", label: "Company", value: entry.company },
+      { id: "resume", label: "Resume link", value: entry.resume },
+      { id: "output", label: "Generated message", value: entry.message }
+    ];
+    const missingFields = requiredFields.filter((field) => !field.value);
+    if (missingFields.length > 0) {
+      missingFields.forEach(({ id }) => document.getElementById(id).classList.add("field-error"));
+      const fieldNames = missingFields.map((field) => field.label).join(", ");
+      alert(`Please complete all required fields: ${fieldNames}.`);
+      return;
+    }
+
     if (editIndex !== null) {
       history[editIndex] = entry;
       editIndex = null;
@@ -414,6 +471,12 @@
     const charCount = document.getElementById("charCount");
     charCount.textContent = `${output.length}/300 characters`;
     charCount.style.color = output.length > 300 ? "#dc3545" : "#6b7280";
+  }
+
+  function clearValidationStyles() {
+    document.querySelectorAll(".field-error").forEach((element) => {
+      element.classList.remove("field-error");
+    });
   }
 
   function renderHistory() {
@@ -484,6 +547,10 @@
 
     if (event.target.checked) {
       resumeInput.value = defaultResumeLink;
+      resumeInput.readOnly = true;
+      resumeInput.classList.remove("field-error");
+    } else {
+      resumeInput.readOnly = false;
     }
   });
 
