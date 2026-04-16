@@ -98,7 +98,7 @@ async function bootstrap() {
   if (!inExtension) {
     tabHintEl.textContent = "Web mode detected (e.g., GitHub Pages). Generate and copy your message here.";
   } else {
-    tabHintEl.textContent = "Extension mode detected. Generate and copy your message from any tab.";
+    tabHintEl.textContent = "Extension side panel detected. It stays open while you switch tabs.";
   }
 
   const savedData = await getStoredFormData();

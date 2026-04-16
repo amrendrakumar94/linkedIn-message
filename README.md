@@ -3,7 +3,7 @@
 This project now supports **both modes**:
 
 1. **Hosted web page mode** (e.g., GitHub Pages) for direct browser usage.
-2. **Chrome extension mode** for popup usage on any tab.
+2. **Chrome extension mode** using a side panel that stays open while switching tabs.
 
 ## What it does
 
@@ -23,9 +23,11 @@ This project now supports **both modes**:
 2. Enable **Developer mode** (top-right).
 3. Click **Load unpacked**.
 4. Select this folder: `linkedIn-message`.
-5. Pin the extension and open it on any active tab.
+5. Pin the extension and click it to open the side panel.
 
 ## Extension-specific behavior
 
-- When running as an extension popup, it works on every tab (no LinkedIn-tab restriction).
+- Clicking the extension icon opens a **side panel** (not a transient popup).
+- The side panel stays open while you switch tabs in the same browser window.
+- It works on every tab (no LinkedIn-tab restriction).
 - In web mode (non-extension), LinkedIn-tab checks are skipped and it works as a normal message generator page.
