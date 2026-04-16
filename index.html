@@ -2,100 +2,234 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Referral Message Generator</title>
   <style>
+    :root {
+      --bg: #f3f6ff;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --primary: #4f46e5;
+      --primary-strong: #4338ca;
+      --border: #dbe3f4;
+      --danger: #dc3545;
+      --shadow: 0 18px 40px rgba(79, 70, 229, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
       margin: 0;
-      padding: 20px;
+      min-height: 100vh;
+      font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(79, 70, 229, 0.2), transparent 35%),
+        radial-gradient(circle at 90% 20%, rgba(16, 185, 129, 0.16), transparent 35%),
+        var(--bg);
+      padding: 28px 16px 48px;
     }
+
     .container {
-      max-width: 700px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 28px;
     }
+
     h2 {
-      text-align: center;
+      margin: 0;
+      font-size: 1.8rem;
+      line-height: 1.2;
     }
-    input, textarea {
+
+    .subtitle {
+      margin: 8px 0 24px;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    input,
+    textarea {
       width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      border: 1px solid #cfd9ee;
+      background: #f9fbff;
+      border-radius: 10px;
+      padding: 11px 12px;
+      color: var(--text);
+      font-size: 0.96rem;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+      background: #fff;
+    }
+
+    .inline-group {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
     .checkbox-row {
+      margin-top: 2px;
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 4px 0 10px;
-      color: #333;
-      font-size: 14px;
+      color: #374151;
+      font-size: 0.9rem;
     }
+
     .checkbox-row input[type="checkbox"] {
       width: auto;
       margin: 0;
     }
-    .inline-group {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-top: 4px;
-    }
-    .inline-group input {
-      margin: 0;
-      flex: 1;
-    }
-    .inline-group button {
-      margin-top: 0;
-      white-space: nowrap;
-    }
-    textarea {
-      height: 120px;
-      resize: none;
-    }
-    button {
-      padding: 10px;
-      margin-top: 8px;
-      border: none;
-      border-radius: 6px;
-      background: #007bff;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
-    }
+
     .btn-group {
+      margin-top: 18px;
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
     }
-    .history {
-      margin-top: 20px;
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.15s ease;
     }
-    .history-item {
-      border: 1px solid #ddd;
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      background: #fafafa;
+
+    button:hover {
+      background: var(--primary-strong);
+      transform: translateY(-1px);
     }
-    .history-actions {
-      margin-top: 8px;
-      display: flex;
-      gap: 10px;
-    }
+
     .small-btn {
-      padding: 5px 10px;
-      font-size: 12px;
-      background: #6c757d;
+      background: #64748b;
+      font-size: 0.8rem;
+      padding: 8px 10px;
     }
+
+    .small-btn:hover {
+      background: #475569;
+    }
+
     .delete-btn {
-      background: #dc3545;
+      background: #dc2626;
+    }
+
+    .delete-btn:hover {
+      background: #b91c1c;
+    }
+
+    .output-wrap {
+      margin-top: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    #charCount {
+      color: var(--muted);
+      font-size: 0.86rem;
+      text-align: right;
+    }
+
+    .history {
+      margin-top: 24px;
+      border-top: 1px solid #e5eaf7;
+      padding-top: 20px;
+    }
+
+    .history h3 {
+      margin: 0 0 12px;
+      font-size: 1.1rem;
+    }
+
+    .history-item {
+      background: #f8faff;
+      border: 1px solid #dce5fb;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .history-item p {
+      margin: 10px 0 0;
+      color: #1f2937;
+    }
+
+    .history-item small {
+      color: var(--muted);
+    }
+
+    .history-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 760px) {
+      .container {
+        padding: 20px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .inline-group {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .small-btn {
+        width: auto;
+      }
     }
   </style>
 </head>
@@ -103,32 +237,57 @@
 
 <div class="container">
   <h2>Referral Message Generator</h2>
+  <p class="subtitle">Craft quick, polished LinkedIn referral requests and keep reusable history.</p>
 
-  <input type="text" id="name" placeholder="Referrer Name" />
-  <input type="text" id="role" placeholder="Role" />
-  <input type="text" id="jobId" placeholder="Job ID" />
-  <input type="text" id="company" placeholder="Company Name" />
-  <input type="text" id="resume" placeholder="Resume Link" />
-  <div class="inline-group">
-    <input type="text" id="defaultResume" placeholder="Default Resume Link" />
-    <button type="button" class="small-btn" onclick="saveDefaultResume()">Save Default Resume</button>
+  <div class="grid">
+    <div class="field">
+      <label for="name">Referrer name</label>
+      <input type="text" id="name" placeholder="e.g., Sarah" />
+    </div>
+    <div class="field">
+      <label for="role">Role</label>
+      <input type="text" id="role" placeholder="e.g., Software Engineer" />
+    </div>
+    <div class="field">
+      <label for="jobId">Job ID</label>
+      <input type="text" id="jobId" placeholder="e.g., 123456" />
+    </div>
+    <div class="field">
+      <label for="company">Company</label>
+      <input type="text" id="company" placeholder="e.g., LinkedIn" />
+    </div>
+    <div class="field full">
+      <label for="resume">Resume link</label>
+      <input type="text" id="resume" placeholder="https://..." />
+    </div>
+
+    <div class="field full">
+      <label for="defaultResume">Default resume link</label>
+      <div class="inline-group">
+        <input type="text" id="defaultResume" placeholder="Use this as your default resume URL" />
+        <button type="button" class="small-btn" onclick="saveDefaultResume()">Save default</button>
+      </div>
+      <label class="checkbox-row">
+        <input type="checkbox" id="useDefaultResume" />
+        Use saved default resume link
+      </label>
+    </div>
   </div>
-  <label class="checkbox-row">
-    <input type="checkbox" id="useDefaultResume" />
-    Use saved default resume link
-  </label>
 
   <div class="btn-group">
-    <button onclick="generateMessage()">Generate</button>
-    <button onclick="copyMessage()">Copy</button>
-    <button onclick="saveMessage()">Save</button>
+    <button onclick="generateMessage()">Generate Message</button>
+    <button onclick="copyMessage()">Copy Message</button>
+    <button onclick="saveMessage()">Save to History</button>
   </div>
 
-  <textarea id="output" placeholder="Generated message..."></textarea>
-  <small id="charCount">0/300 characters</small>
+  <div class="output-wrap">
+    <label for="output">Generated message</label>
+    <textarea id="output" placeholder="Your generated message appears here..."></textarea>
+    <small id="charCount">0/300 characters</small>
+  </div>
 
   <div class="history">
-    <h3>History</h3>
+    <h3>Saved Messages</h3>
     <div id="historyList"></div>
   </div>
 </div>
@@ -245,7 +404,7 @@
     const output = document.getElementById("output").value;
     const charCount = document.getElementById("charCount");
     charCount.textContent = `${output.length}/300 characters`;
-    charCount.style.color = output.length > 300 ? "#dc3545" : "#666";
+    charCount.style.color = output.length > 300 ? "#dc3545" : "#6b7280";
   }
 
   function renderHistory() {
@@ -318,6 +477,7 @@
       resumeInput.value = defaultResumeLink;
     }
   });
+
   document.getElementById("defaultResume").value = getDefaultResumeLink();
   renderHistory();
   updateCharacterCount();
