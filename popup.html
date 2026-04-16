@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LinkedIn Message Copilot</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>LinkedIn Message Copilot</h1>
+    <p id="tabHint" class="hint">Works on any tab. Your latest draft stays saved when you switch tabs.</p>
+
+    <form id="messageForm">
+      <label>
+        Referrer name
+        <input id="name" type="text" placeholder="e.g., Sarah" required />
+      </label>
+
+      <label>
+        Role
+        <input id="role" type="text" placeholder="e.g., Software Engineer" required />
+      </label>
+
+      <label>
+        Job ID
+        <input id="jobId" type="text" placeholder="e.g., 123456" required />
+      </label>
+
+      <label>
+        Company
+        <input id="company" type="text" placeholder="e.g., LinkedIn" required />
+      </label>
+
+      <label>
+        Resume link
+        <input id="resume" type="url" placeholder="https://..." required />
+      </label>
+
+      <label class="checkbox">
+        <input id="useTinyUrl" type="checkbox" checked />
+        Shorten resume URL with TinyURL
+      </label>
+
+      <div class="actions">
+        <button type="submit" id="generateCopyBtn">Generate + Copy</button>
+        <button type="button" id="clearDraftBtn" class="secondary-btn">Clear Draft</button>
+      </div>
+    </form>
+
+    <label class="output-label" for="output">Generated message</label>
+    <textarea id="output" readonly placeholder="Generated message will appear here..."></textarea>
+    <p id="status" class="status" aria-live="polite"></p>
+  </main>
+
+  <script src="popup.js"></script>
+</body>
+</html>
