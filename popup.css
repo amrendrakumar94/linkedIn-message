@@ -1,0 +1,124 @@
+:root {
+  --bg: #f4f6ff;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --primary: #4f46e5;
+  --primary-strong: #4338ca;
+  --border: #d9e2f5;
+  --success: #15803d;
+  --warn: #b45309;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 360px;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.container {
+  margin: 0;
+  padding: 14px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.hint {
+  margin: 6px 0 12px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+form {
+  display: grid;
+  gap: 8px;
+}
+
+label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+textarea {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 9px;
+  background: var(--card);
+}
+
+textarea {
+  width: 100%;
+  margin-top: 6px;
+  min-height: 96px;
+  resize: vertical;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox input {
+  margin: 0;
+}
+
+.actions {
+  margin-top: 4px;
+}
+
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  padding: 9px;
+  color: #fff;
+  background: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--primary-strong);
+}
+
+button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.output-label {
+  margin-top: 10px;
+}
+
+.status {
+  min-height: 1em;
+  margin: 8px 0 0;
+  font-size: 0.78rem;
+}
+
+.status.success {
+  color: var(--success);
+}
+
+.status.warn {
+  color: var(--warn);
+}
