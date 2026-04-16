@@ -2,10 +2,11 @@ const form = document.getElementById("messageForm");
 const statusEl = document.getElementById("status");
 const tabHintEl = document.getElementById("tabHint");
 const outputEl = document.getElementById("output");
+const generateCopyBtn = document.getElementById("generateCopyBtn");
 const tinyUrlCheckbox = document.getElementById("useTinyUrl");
-const clearDraftBtn = document.getElementById("clearDraftBtn");
 
-const STORAGE_KEY = "linkedinMessageDraft";
+const STORAGE_KEY = "linkedinMessageForm";
+const hasChromeTabsApi = typeof chrome !== "undefined" && !!chrome.tabs?.query;
 const hasChromeStorageApi = typeof chrome !== "undefined" && !!chrome.storage?.local;
 
 function setStatus(message, type = "") {
@@ -36,6 +37,16 @@ function buildMessage({ name, role, jobId, company, resume }) {
   return fitToCharacterLimit(draft, 300);
 }
 
+async function isLinkedInTabActive() {
+  if (!hasChromeTabsApi) {
+    return true;
+  }
+
+  const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const url = activeTab?.url || "";
+  return url.includes("linkedin.com");
+}
+
 function getFormData() {
   return {
     name: document.getElementById("name").value.trim(),
@@ -43,8 +54,7 @@ function getFormData() {
     jobId: document.getElementById("jobId").value.trim(),
     company: document.getElementById("company").value.trim(),
     resume: document.getElementById("resume").value.trim(),
-    useTinyUrl: tinyUrlCheckbox.checked,
-    output: outputEl.value
+    useTinyUrl: tinyUrlCheckbox.checked
   };
 }
 
@@ -55,7 +65,6 @@ function setFormData(data = {}) {
   document.getElementById("company").value = data.company || "";
   document.getElementById("resume").value = data.resume || "";
   tinyUrlCheckbox.checked = data.useTinyUrl ?? true;
-  outputEl.value = data.output || "";
 }
 
 function getStoredFormData() {
@@ -83,18 +92,6 @@ function saveStoredFormData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-function persistDraft() {
-  const currentData = getFormData();
-  saveStoredFormData(currentData);
-}
-
-
-function clearDraft() {
-  setFormData({ useTinyUrl: true });
-  saveStoredFormData(getFormData());
-  setStatus("Draft cleared.", "success");
-}
-
 async function copyToClipboard(text) {
   if (navigator.clipboard?.writeText) {
     await navigator.clipboard.writeText(text);
@@ -108,7 +105,21 @@ async function copyToClipboard(text) {
 }
 
 async function bootstrap() {
-  tabHintEl.textContent = "Works on any tab. Your latest draft stays saved when you switch tabs.";
+  const linkedInTab = await isLinkedInTabActive();
+  const inExtension = hasChromeTabsApi;
+
+  if (!inExtension) {
+    tabHintEl.textContent = "Web mode detected (e.g., GitHub Pages). Generate and copy your message here.";
+  } else {
+    tabHintEl.textContent = linkedInTab
+      ? "LinkedIn tab detected. Generate and copy your message in one click."
+      : "Switch to a LinkedIn tab to use this extension.";
+  }
+
+  if (inExtension && !linkedInTab) {
+    setStatus("LinkedIn tab not detected.", "warn");
+    generateCopyBtn.disabled = true;
+  }
 
   const savedData = await getStoredFormData();
   setFormData(savedData);
@@ -118,8 +129,14 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
   setStatus("Generating message...");
 
+  const linkedInTab = await isLinkedInTabActive();
+  if (hasChromeTabsApi && !linkedInTab) {
+    setStatus("Please open a LinkedIn tab first.", "warn");
+    return;
+  }
+
   const data = getFormData();
-  if (Object.entries(data).some(([key, value]) => key !== "useTinyUrl" && key !== "output" && !value)) {
+  if (Object.entries(data).some(([key, value]) => key !== "useTinyUrl" && !value)) {
     setStatus("Please complete all fields.", "warn");
     return;
   }
@@ -135,11 +152,7 @@ form.addEventListener("submit", async (event) => {
     setStatus("Message generated, but copy failed. Copy manually from the text area.", "warn");
   }
 
-  persistDraft();
+  saveStoredFormData(data);
 });
-
-form.addEventListener("input", persistDraft);
-form.addEventListener("change", persistDraft);
-clearDraftBtn.addEventListener("click", clearDraft);
 
 bootstrap();

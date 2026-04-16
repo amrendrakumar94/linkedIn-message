@@ -83,8 +83,6 @@ textarea {
 
 .actions {
   margin-top: 4px;
-  display: grid;
-  gap: 8px;
 }
 
 button {
@@ -105,14 +103,6 @@ button:hover {
 button:disabled {
   background: #94a3b8;
   cursor: not-allowed;
-}
-
-.secondary-btn {
-  background: #64748b;
-}
-
-.secondary-btn:hover {
-  background: #475569;
 }
 
 .output-label {
