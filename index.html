@@ -112,6 +112,10 @@
       font-size: 0.9rem;
     }
 
+    .checkbox-row + .checkbox-row {
+      margin-top: 6px;
+    }
+
     .checkbox-row input[type="checkbox"] {
       width: auto;
       margin: 0;
@@ -271,6 +275,10 @@
         <input type="checkbox" id="useDefaultResume" />
         Use saved default resume link
       </label>
+      <label class="checkbox-row">
+        <input type="checkbox" id="useTinyUrl" checked />
+        Shorten resume URL with TinyURL
+      </label>
     </div>
   </div>
 
@@ -323,15 +331,16 @@
     const jobId = document.getElementById("jobId").value;
     const company = document.getElementById("company").value;
     const useDefaultResume = document.getElementById("useDefaultResume").checked;
+    const useTinyUrl = document.getElementById("useTinyUrl").checked;
     const defaultResumeLink = getDefaultResumeLink();
     if (useDefaultResume && !defaultResumeLink) {
       alert("No saved default resume link found. Please add and save one first.");
       return;
     }
     const resume = useDefaultResume ? defaultResumeLink : document.getElementById("resume").value;
-    const shortResume = await shortenUrl(resume);
+    const resumeLink = useTinyUrl ? await shortenUrl(resume) : resume.trim();
 
-    const rawMessage = `Hi ${name}, I’m interested in ${role} role at ${company} (Job ID: ${jobId}). Could you please refer me or share the referral link? Resume: ${shortResume} Thanks!`;
+    const rawMessage = `Hi ${name}, I’m interested in ${role} role at ${company} (Job ID: ${jobId}). Could you please refer me or share the referral link? Resume: ${resumeLink} Thanks!`;
     const message = fitToCharacterLimit(rawMessage, 300);
 
     const outputElement = document.getElementById("output");
