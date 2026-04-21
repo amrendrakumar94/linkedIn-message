@@ -8,7 +8,11 @@
 </head>
 <body>
   <main class="container">
-    <h1>LinkedIn Message Copilot</h1>
+    <header class="header-row">
+      <h1>LinkedIn Message Copilot</h1>
+      <button type="button" id="themeToggleBtn" class="secondary-btn" aria-label="Toggle dark mode">🌙 Dark</button>
+    </header>
+
     <p id="tabHint" class="hint">Open this popup on a LinkedIn tab.</p>
 
     <form id="messageForm">
@@ -50,6 +54,19 @@
     <label class="output-label" for="output">Generated message</label>
     <textarea id="output" readonly placeholder="Generated message will appear here..."></textarea>
     <p id="status" class="status" aria-live="polite"></p>
+
+    <section class="history-section" aria-label="Message history">
+      <div class="history-header">
+        <h2>History</h2>
+        <input id="historySearch" type="text" placeholder="Search by company or role" aria-label="Search history" />
+      </div>
+      <ul id="historyList" class="history-list"></ul>
+      <div class="history-controls">
+        <button type="button" id="prevPageBtn" class="secondary-btn">Previous</button>
+        <span id="pageInfo" class="page-info">Page 1 of 1</span>
+        <button type="button" id="nextPageBtn" class="secondary-btn">Next</button>
+      </div>
+    </section>
   </main>
 
   <script src="popup.js"></script>
