@@ -14,8 +14,8 @@ This project now supports **both modes**:
 
 ## Mode 1: Hosted web page (GitHub Pages)
 
-- Use `index.html` for the full web app experience.
-- `popup.html` + `popup.js` also now run in a regular browser context (web mode fallback).
+- Use `index.html` for the full web app experience with the original browser layout.
+- `popup.html` + `popup.js` power the Chrome extension side panel and can still run in a regular browser context as a fallback.
 
 ## Mode 2: Chrome extension (developer mode)
 
