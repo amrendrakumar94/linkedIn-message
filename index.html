@@ -14,7 +14,45 @@
       --primary-strong: #4338ca;
       --border: #dbe3f4;
       --danger: #dc3545;
+      --input-bg: #f9fbff;
+      --input-focus-bg: #ffffff;
+      --label: #374151;
+      --checkbox-hover: #1f2937;
+      --history-bg: #f8faff;
+      --history-text: #1f2937;
+      --secondary-button: #64748b;
+      --secondary-button-strong: #475569;
+      --delete-button: #dc2626;
+      --delete-button-strong: #b91c1c;
+      --focus-ring: rgba(79, 70, 229, 0.14);
+      --danger-ring: rgba(220, 38, 38, 0.14);
+      --danger-bg: #fff7f7;
       --shadow: 0 18px 40px rgba(79, 70, 229, 0.12);
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --primary: #818cf8;
+      --primary-strong: #6366f1;
+      --border: #334155;
+      --danger: #f87171;
+      --input-bg: #111827;
+      --input-focus-bg: #0f172a;
+      --label: #cbd5e1;
+      --checkbox-hover: #f8fafc;
+      --history-bg: #111827;
+      --history-text: #e2e8f0;
+      --secondary-button: #475569;
+      --secondary-button-strong: #334155;
+      --delete-button: #ef4444;
+      --delete-button-strong: #dc2626;
+      --focus-ring: rgba(129, 140, 248, 0.24);
+      --danger-ring: rgba(248, 113, 113, 0.2);
+      --danger-bg: #2f1d24;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
     }
 
     * {
@@ -43,6 +81,30 @@
       padding: 28px;
     }
 
+    .header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-block {
+      min-width: 0;
+    }
+
+    .theme-toggle {
+      flex: 0 0 auto;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .theme-toggle:hover {
+      background: var(--input-bg);
+      color: var(--text);
+    }
+
     h2 {
       margin: 0;
       font-size: 1.8rem;
@@ -50,7 +112,7 @@
     }
 
     .subtitle {
-      margin: 8px 0 24px;
+      margin: 8px 0 0;
       color: var(--muted);
     }
 
@@ -78,14 +140,14 @@
     label {
       font-size: 0.88rem;
       font-weight: 600;
-      color: #374151;
+      color: var(--label);
     }
 
     input,
     textarea {
       width: 100%;
-      border: 1px solid #cfd9ee;
-      background: #f9fbff;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
       border-radius: 10px;
       padding: 11px 12px;
       color: var(--text);
@@ -97,8 +159,8 @@
     textarea:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
-      background: #fff;
+      box-shadow: 0 0 0 3px var(--focus-ring);
+      background: var(--input-focus-bg);
     }
 
     .inline-group {
@@ -113,7 +175,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #374151;
+      color: var(--label);
       font-size: 0.9rem;
     }
 
@@ -128,7 +190,7 @@
     }
 
     .checkbox-row:hover {
-      color: #1f2937;
+      color: var(--checkbox-hover);
     }
 
     .btn-group {
@@ -155,21 +217,21 @@
     }
 
     .small-btn {
-      background: #64748b;
+      background: var(--secondary-button);
       font-size: 0.8rem;
       padding: 8px 10px;
     }
 
     .small-btn:hover {
-      background: #475569;
+      background: var(--secondary-button-strong);
     }
 
     .delete-btn {
-      background: #dc2626;
+      background: var(--delete-button);
     }
 
     .delete-btn:hover {
-      background: #b91c1c;
+      background: var(--delete-button-strong);
     }
 
     .output-wrap {
@@ -197,13 +259,13 @@
 
     .field-error {
       border-color: var(--danger) !important;
-      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.14) !important;
-      background: #fff7f7;
+      box-shadow: 0 0 0 3px var(--danger-ring) !important;
+      background: var(--danger-bg);
     }
 
     .history {
       margin-top: 24px;
-      border-top: 1px solid #e5eaf7;
+      border-top: 1px solid var(--border);
       padding-top: 20px;
     }
 
@@ -213,8 +275,8 @@
     }
 
     .history-item {
-      background: #f8faff;
-      border: 1px solid #dce5fb;
+      background: var(--history-bg);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 14px;
       margin-bottom: 10px;
@@ -222,7 +284,7 @@
 
     .history-item p {
       margin: 10px 0 0;
-      color: #1f2937;
+      color: var(--history-text);
     }
 
     .history-item small {
@@ -249,6 +311,11 @@
         grid-template-columns: 1fr;
       }
 
+      .header-row {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
       button {
         width: 100%;
       }
@@ -262,8 +329,13 @@
 <body>
 
 <div class="container">
-  <h2>Referral Message Generator</h2>
-  <p class="subtitle">Craft quick, polished LinkedIn referral requests and keep reusable history.</p>
+  <div class="header-row">
+    <div class="title-block">
+      <h2>Referral Message Generator</h2>
+      <p class="subtitle">Craft quick, polished LinkedIn referral requests and keep reusable history.</p>
+    </div>
+    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
+  </div>
 
   <div class="grid">
     <div class="field">
@@ -326,6 +398,18 @@
 <script>
   let editIndex = null;
   const DEFAULT_RESUME_KEY = "defaultResumeLink";
+  const THEME_KEY = "referralMessageTheme";
+
+  function setTheme(theme) {
+    const normalizedTheme = theme === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", normalizedTheme);
+    document.getElementById("themeToggle").textContent = normalizedTheme === "dark" ? "☀️ Light" : "🌙 Dark";
+    localStorage.setItem(THEME_KEY, normalizedTheme);
+  }
+
+  function getSavedTheme() {
+    return localStorage.getItem(THEME_KEY) || "light";
+  }
 
   async function shortenUrl(url) {
     const trimmedUrl = url.trim();
@@ -380,7 +464,7 @@
 
     const resumeLink = useTinyUrl ? await shortenUrl(resume) : resume.trim();
 
-    const rawMessage = `Hi ${name},\n\nI came across the ${role} role at ${company} (Job ID: ${jobId}). I’d really appreciate it if you could refer me for the position.\n\nResume link: ${resumeLink}\n\nThanks!\n[Your Name]`;
+    const rawMessage = `Hi ${name},\n\nI came across the ${role} role at ${company} (Job ID: ${jobId}). I’d really appreciate it if you could refer me for the position.\n\nResume link: ${resumeLink}\n\nThanks!`;
     const message = fitToCharacterLimit(rawMessage, 300);
 
     const outputElement = document.getElementById("output");
@@ -534,6 +618,11 @@
     updateCharacterCount();
   }
 
+  document.getElementById("themeToggle").addEventListener("click", () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    setTheme(currentTheme === "dark" ? "light" : "dark");
+  });
+
   document.getElementById("output").addEventListener("input", updateCharacterCount);
   document.getElementById("useDefaultResume").addEventListener("change", (event) => {
     const resumeInput = document.getElementById("resume");
@@ -554,6 +643,7 @@
     }
   });
 
+  setTheme(getSavedTheme());
   document.getElementById("defaultResume").value = getDefaultResumeLink();
   renderHistory();
   updateCharacterCount();
