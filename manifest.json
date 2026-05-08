@@ -10,6 +10,7 @@
     "default_title": "LinkedIn Message Copilot"
   },
   "permissions": ["storage", "sidePanel"],
+  "host_permissions": ["https://tinyurl.com/*"],
   "side_panel": {
     "default_path": "popup.html"
   }
