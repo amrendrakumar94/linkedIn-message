@@ -380,7 +380,7 @@
 
     const resumeLink = useTinyUrl ? await shortenUrl(resume) : resume.trim();
 
-    const rawMessage = `Hi ${name},\n\nI’m interested in ${role} role at ${company} (Job ID: ${jobId}). Could you please refer me?\n\nResume: ${resumeLink}\n\nThanks!`;
+    const rawMessage = `Hi ${name},\n\nI came across the ${role} role at ${company} (Job ID: ${jobId}). I’d really appreciate it if you could refer me for the position.\n\nResume link: ${resumeLink}\n\nThanks!\n[Your Name]`;
     const message = fitToCharacterLimit(rawMessage, 300);
 
     const outputElement = document.getElementById("output");

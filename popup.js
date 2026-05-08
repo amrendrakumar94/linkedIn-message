@@ -45,7 +45,7 @@ async function shortenUrl(url) {
 }
 
 function buildMessage({ name, role, jobId, company, resume }) {
-  const draft = `Hi ${name},\n\nI’m interested in ${role} role at ${company} (Job ID: ${jobId}). Could you please refer me?\n\nResume: ${resumeLink}\n\nThanks!`;
+  const draft = `Hi ${name},\n\nI came across the ${role} role at ${company} (Job ID: ${jobId}). I’d really appreciate it if you could refer me for the position.\n\nResume link: ${resume}\n\nThanks!\n[Your Name]`;
   return fitToCharacterLimit(draft, 300);
 }
 
