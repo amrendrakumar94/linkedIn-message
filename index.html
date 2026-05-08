@@ -1,74 +1,563 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LinkedIn Message Copilot</title>
-  <link rel="stylesheet" href="popup.css" />
+  <title>Referral Message Generator</title>
+  <style>
+    :root {
+      --bg: #f3f6ff;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --primary: #4f46e5;
+      --primary-strong: #4338ca;
+      --border: #dbe3f4;
+      --danger: #dc3545;
+      --shadow: 0 18px 40px rgba(79, 70, 229, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(79, 70, 229, 0.2), transparent 35%),
+        radial-gradient(circle at 90% 20%, rgba(16, 185, 129, 0.16), transparent 35%),
+        var(--bg);
+      padding: 28px 16px 48px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin: 8px 0 24px;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .required {
+      color: #dc2626;
+      margin-left: 2px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid #cfd9ee;
+      background: #f9fbff;
+      border-radius: 10px;
+      padding: 11px 12px;
+      color: var(--text);
+      font-size: 0.96rem;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+      background: #fff;
+    }
+
+    .inline-group {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .checkbox-row {
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #374151;
+      font-size: 0.9rem;
+    }
+
+    .checkbox-row + .checkbox-row {
+      margin-top: 6px;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .checkbox-row:hover {
+      color: #1f2937;
+    }
+
+    .btn-group {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    button:hover {
+      background: var(--primary-strong);
+      transform: translateY(-1px);
+    }
+
+    .small-btn {
+      background: #64748b;
+      font-size: 0.8rem;
+      padding: 8px 10px;
+    }
+
+    .small-btn:hover {
+      background: #475569;
+    }
+
+    .delete-btn {
+      background: #dc2626;
+    }
+
+    .delete-btn:hover {
+      background: #b91c1c;
+    }
+
+    .output-wrap {
+      margin-top: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    #charCount {
+      color: var(--muted);
+      font-size: 0.86rem;
+      text-align: right;
+    }
+
+    .field-error {
+      border-color: var(--danger) !important;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.14) !important;
+      background: #fff7f7;
+    }
+
+    .history {
+      margin-top: 24px;
+      border-top: 1px solid #e5eaf7;
+      padding-top: 20px;
+    }
+
+    .history h3 {
+      margin: 0 0 12px;
+      font-size: 1.1rem;
+    }
+
+    .history-item {
+      background: #f8faff;
+      border: 1px solid #dce5fb;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .history-item p {
+      margin: 10px 0 0;
+      color: #1f2937;
+    }
+
+    .history-item small {
+      color: var(--muted);
+    }
+
+    .history-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 760px) {
+      .container {
+        padding: 20px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .inline-group {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .small-btn {
+        width: auto;
+      }
+    }
+  </style>
 </head>
 <body>
-  <main class="container">
-    <header class="header-row">
-      <h1>LinkedIn Message Copilot</h1>
-      <button type="button" id="themeToggleBtn" class="secondary-btn" aria-label="Toggle dark mode">🌙 Dark</button>
-    </header>
 
-    <p id="tabHint" class="hint">Open this popup on a LinkedIn tab.</p>
+<div class="container">
+  <h2>Referral Message Generator</h2>
+  <p class="subtitle">Craft quick, polished LinkedIn referral requests and keep reusable history.</p>
 
-    <form id="messageForm">
-      <label>
-        Referrer name
-        <input id="name" type="text" placeholder="e.g., Sarah" required />
+  <div class="grid">
+    <div class="field">
+      <label for="name">Referrer name<span class="required">*</span></label>
+      <input type="text" id="name" placeholder="e.g., Sarah" required />
+    </div>
+    <div class="field">
+      <label for="role">Role<span class="required">*</span></label>
+      <input type="text" id="role" placeholder="e.g., Software Engineer" required />
+    </div>
+    <div class="field">
+      <label for="jobId">Job ID<span class="required">*</span></label>
+      <input type="text" id="jobId" placeholder="e.g., 123456" required />
+    </div>
+    <div class="field">
+      <label for="company">Company<span class="required">*</span></label>
+      <input type="text" id="company" placeholder="e.g., LinkedIn" required />
+    </div>
+    <div class="field full">
+      <label for="resume">Resume link<span class="required">*</span></label>
+      <input type="text" id="resume" placeholder="https://..." required />
+    </div>
+
+    <div class="field full">
+      <label for="defaultResume">Default resume link</label>
+      <div class="inline-group">
+        <input type="text" id="defaultResume" placeholder="Use this as your default resume URL" />
+        <button type="button" class="small-btn" onclick="saveDefaultResume()">Save default</button>
+      </div>
+      <label class="checkbox-row">
+        <input type="checkbox" id="useDefaultResume" />
+        Use saved default resume link
       </label>
-
-      <label>
-        Role
-        <input id="role" type="text" placeholder="e.g., Software Engineer" required />
-      </label>
-
-      <label>
-        Job ID
-        <input id="jobId" type="text" placeholder="e.g., 123456" required />
-      </label>
-
-      <label>
-        Company
-        <input id="company" type="text" placeholder="e.g., LinkedIn" required />
-      </label>
-
-      <label>
-        Resume link
-        <input id="resume" type="url" placeholder="https://..." required />
-      </label>
-
-      <label class="checkbox">
-        <input id="useTinyUrl" type="checkbox" checked />
+      <label class="checkbox-row">
+        <input type="checkbox" id="useTinyUrl" checked />
         Shorten resume URL with TinyURL
       </label>
+      <p class="hint">* Required fields</p>
+    </div>
+  </div>
 
-      <div class="actions">
-        <button type="submit" id="generateCopyBtn">Generate + Copy</button>
-      </div>
-    </form>
+  <div class="btn-group">
+    <button onclick="generateMessage()">Generate Message</button>
+    <button onclick="copyMessage()">Copy Message</button>
+    <button onclick="saveMessage()">Save to History</button>
+  </div>
 
-    <label class="output-label" for="output">Generated message</label>
-    <textarea id="output" readonly placeholder="Generated message will appear here..."></textarea>
-    <p id="status" class="status" aria-live="polite"></p>
+  <div class="output-wrap">
+    <label for="output">Generated message<span class="required">*</span></label>
+    <textarea id="output" placeholder="Your generated message appears here..." required></textarea>
+    <small id="charCount">0/300 characters</small>
+  </div>
 
-    <section class="history-section" aria-label="Message history">
-      <div class="history-header">
-        <h2>History</h2>
-        <input id="historySearch" type="text" placeholder="Search by company or role" aria-label="Search history" />
-      </div>
-      <ul id="historyList" class="history-list"></ul>
-      <div class="history-controls">
-        <button type="button" id="prevPageBtn" class="secondary-btn">Previous</button>
-        <span id="pageInfo" class="page-info">Page 1 of 1</span>
-        <button type="button" id="nextPageBtn" class="secondary-btn">Next</button>
-      </div>
-    </section>
-  </main>
+  <div class="history">
+    <h3>Saved Messages</h3>
+    <div id="historyList"></div>
+  </div>
+</div>
 
-  <script src="popup.js"></script>
+<script>
+  let editIndex = null;
+  const DEFAULT_RESUME_KEY = "defaultResumeLink";
+
+  async function shortenUrl(url) {
+    const trimmedUrl = url.trim();
+    if (!trimmedUrl) return "";
+
+    try {
+      const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(trimmedUrl)}`);
+      if (!response.ok) {
+        throw new Error("Short URL service unavailable");
+      }
+      const shortUrl = (await response.text()).trim();
+      return shortUrl || trimmedUrl;
+    } catch (error) {
+      return trimmedUrl;
+    }
+  }
+
+  function fitToCharacterLimit(message, limit) {
+    if (message.length <= limit) return message;
+    return `${message.slice(0, limit - 3).trimEnd()}...`;
+  }
+
+  async function generateMessage() {
+    clearValidationStyles();
+    const name = document.getElementById("name").value.trim();
+    const role = document.getElementById("role").value.trim();
+    const jobId = document.getElementById("jobId").value.trim();
+    const company = document.getElementById("company").value.trim();
+    const useDefaultResume = document.getElementById("useDefaultResume").checked;
+    const useTinyUrl = document.getElementById("useTinyUrl").checked;
+    const defaultResumeLink = getDefaultResumeLink();
+    if (useDefaultResume && !defaultResumeLink) {
+      alert("No saved default resume link found. Please add and save one first.");
+      return;
+    }
+    const resume = useDefaultResume ? defaultResumeLink : document.getElementById("resume").value.trim();
+    const requiredFields = [
+      { id: "name", label: "Referrer name", value: name },
+      { id: "role", label: "Role", value: role },
+      { id: "jobId", label: "Job ID", value: jobId },
+      { id: "company", label: "Company", value: company },
+      { id: "resume", label: "Resume link", value: resume }
+    ];
+
+    const missingFields = requiredFields.filter((field) => !field.value);
+    if (missingFields.length > 0) {
+      missingFields.forEach(({ id }) => document.getElementById(id).classList.add("field-error"));
+      const fieldNames = missingFields.map((field) => field.label).join(", ");
+      alert(`Please complete all required fields: ${fieldNames}.`);
+      return;
+    }
+
+    const resumeLink = useTinyUrl ? await shortenUrl(resume) : resume.trim();
+
+    const rawMessage = `Hi ${name},\n\nI came across the ${role} role at ${company} (Job ID: ${jobId}). I’d really appreciate it if you could refer me for the position.\n\nResume link: ${resumeLink}\n\nThanks!\n[Your Name]`;
+    const message = fitToCharacterLimit(rawMessage, 300);
+
+    const outputElement = document.getElementById("output");
+    outputElement.value = message;
+    updateCharacterCount();
+  }
+
+  function copyMessage() {
+    const output = document.getElementById("output");
+    output.select();
+    document.execCommand("copy");
+    alert("Copied!");
+  }
+
+  function getHistory() {
+    return JSON.parse(localStorage.getItem("messages") || "[]");
+  }
+
+  function saveToStorage(data) {
+    localStorage.setItem("messages", JSON.stringify(data));
+  }
+
+  function getDefaultResumeLink() {
+    return (localStorage.getItem(DEFAULT_RESUME_KEY) || "").trim();
+  }
+
+  function saveDefaultResume() {
+    const defaultResumeInput = document.getElementById("defaultResume");
+    const defaultResume = defaultResumeInput.value.trim();
+
+    if (!defaultResume) {
+      alert("Please enter a default resume link before saving.");
+      return;
+    }
+
+    localStorage.setItem(DEFAULT_RESUME_KEY, defaultResume);
+    alert("Default resume link saved.");
+  }
+
+  function saveMessage() {
+    clearValidationStyles();
+    const history = getHistory();
+    const nameInput = document.getElementById("name");
+    const roleInput = document.getElementById("role");
+    const jobIdInput = document.getElementById("jobId");
+    const companyInput = document.getElementById("company");
+    const resumeInput = document.getElementById("resume");
+    const outputInput = document.getElementById("output");
+
+    const entry = {
+      name: nameInput.value.trim(),
+      role: roleInput.value.trim(),
+      jobId: jobIdInput.value.trim(),
+      company: companyInput.value.trim(),
+      resume: resumeInput.value.trim(),
+      message: outputInput.value.trim()
+    };
+
+    const requiredFields = [
+      { id: "name", label: "Referrer name", value: entry.name },
+      { id: "role", label: "Role", value: entry.role },
+      { id: "jobId", label: "Job ID", value: entry.jobId },
+      { id: "company", label: "Company", value: entry.company },
+      { id: "resume", label: "Resume link", value: entry.resume },
+      { id: "output", label: "Generated message", value: entry.message }
+    ];
+    const missingFields = requiredFields.filter((field) => !field.value);
+    if (missingFields.length > 0) {
+      missingFields.forEach(({ id }) => document.getElementById(id).classList.add("field-error"));
+      const fieldNames = missingFields.map((field) => field.label).join(", ");
+      alert(`Please complete all required fields: ${fieldNames}.`);
+      return;
+    }
+
+    if (editIndex !== null) {
+      history[editIndex] = entry;
+      editIndex = null;
+    } else {
+      history.push(entry);
+    }
+
+    saveToStorage(history);
+    renderHistory();
+  }
+
+  function updateCharacterCount() {
+    const output = document.getElementById("output").value;
+    const charCount = document.getElementById("charCount");
+    charCount.textContent = `${output.length}/300 characters`;
+    charCount.style.color = output.length > 300 ? "#dc3545" : "#6b7280";
+  }
+
+  function clearValidationStyles() {
+    document.querySelectorAll(".field-error").forEach((element) => {
+      element.classList.remove("field-error");
+    });
+  }
+
+  function renderHistory() {
+    const history = getHistory();
+    const container = document.getElementById("historyList");
+    container.innerHTML = "";
+
+    history.forEach((item, index) => {
+      const div = document.createElement("div");
+      div.className = "history-item";
+      const safeName = item.name || "Unknown";
+      const safeRole = item.role || "Unknown role";
+      const safeCompany = item.company || "Unknown company";
+      const safeResume = item.resume || "No resume link";
+      const safeMessage = item.message || "";
+
+      div.innerHTML = `
+        <b>${safeName}</b> | ${safeRole} @ ${safeCompany}
+        <br/><small>Job ID: ${item.jobId || "N/A"}</small>
+        <br/><small>${safeResume}</small>
+        <p>${safeMessage}</p>
+        <div class="history-actions">
+          <button class="small-btn" onclick="editItem(${index})">Edit</button>
+          <button class="small-btn delete-btn" onclick="deleteItem(${index})">Delete</button>
+          <button class="small-btn" onclick="useItem(${index})">Use</button>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+  }
+
+  function editItem(index) {
+    const item = getHistory()[index];
+    name.value = item.name;
+    role.value = item.role;
+    jobId.value = item.jobId || "";
+    company.value = item.company;
+    resume.value = item.resume;
+    output.value = item.message;
+    updateCharacterCount();
+    editIndex = index;
+  }
+
+  function deleteItem(index) {
+    const history = getHistory();
+    history.splice(index, 1);
+    saveToStorage(history);
+    renderHistory();
+  }
+
+  function useItem(index) {
+    const item = getHistory()[index];
+    output.value = item.message;
+    updateCharacterCount();
+  }
+
+  document.getElementById("output").addEventListener("input", updateCharacterCount);
+  document.getElementById("useDefaultResume").addEventListener("change", (event) => {
+    const resumeInput = document.getElementById("resume");
+    const defaultResumeLink = getDefaultResumeLink();
+
+    if (event.target.checked && !defaultResumeLink) {
+      alert("No saved default resume link found. Please add and save one first.");
+      event.target.checked = false;
+      return;
+    }
+
+    if (event.target.checked) {
+      resumeInput.value = defaultResumeLink;
+      resumeInput.readOnly = true;
+      resumeInput.classList.remove("field-error");
+    } else {
+      resumeInput.readOnly = false;
+    }
+  });
+
+  document.getElementById("defaultResume").value = getDefaultResumeLink();
+  renderHistory();
+  updateCharacterCount();
+</script>
+
 </body>
 </html>
