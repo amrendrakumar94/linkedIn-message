@@ -8,11 +8,18 @@
     :root {
       --bg: #f3f6ff;
       --card: #ffffff;
+      --field-bg: #f9fbff;
+      --field-focus-bg: #ffffff;
       --text: #111827;
       --muted: #6b7280;
+      --label: #374151;
+      --label-hover: #1f2937;
       --primary: #4f46e5;
       --primary-strong: #4338ca;
       --border: #dbe3f4;
+      --field-border: #cfd9ee;
+      --history-bg: #f8faff;
+      --history-border: #dce5fb;
       --danger: #dc3545;
       --input-bg: #f9fbff;
       --input-focus-bg: #ffffff;
@@ -226,6 +233,18 @@
       background: var(--secondary-button-strong);
     }
 
+    .theme-toggle {
+      flex: 0 0 auto;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .theme-toggle:hover {
+      background: var(--field-bg);
+      transform: translateY(-1px);
+    }
+
     .delete-btn {
       background: var(--delete-button);
     }
@@ -318,6 +337,10 @@
 
       button {
         width: 100%;
+      }
+
+      .header-row {
+        flex-direction: column;
       }
 
       .small-btn {
@@ -554,7 +577,20 @@
     const output = document.getElementById("output").value;
     const charCount = document.getElementById("charCount");
     charCount.textContent = `${output.length}/300 characters`;
-    charCount.style.color = output.length > 300 ? "#dc3545" : "#6b7280";
+    charCount.style.color = output.length > 300 ? "var(--danger)" : "var(--muted)";
+  }
+
+  function setTheme(theme) {
+    const normalizedTheme = theme === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", normalizedTheme);
+    document.getElementById("themeToggle").textContent = normalizedTheme === "dark" ? "☀️ Light" : "🌙 Dark";
+    localStorage.setItem(THEME_KEY, normalizedTheme);
+  }
+
+  function getInitialTheme() {
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    if (savedTheme) return savedTheme;
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
 
   function clearValidationStyles() {
