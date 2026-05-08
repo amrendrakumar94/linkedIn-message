@@ -8,13 +8,39 @@
     :root {
       --bg: #f3f6ff;
       --card: #ffffff;
+      --field-bg: #f9fbff;
+      --field-focus-bg: #ffffff;
       --text: #111827;
       --muted: #6b7280;
+      --label: #374151;
+      --label-hover: #1f2937;
       --primary: #4f46e5;
       --primary-strong: #4338ca;
       --border: #dbe3f4;
+      --field-border: #cfd9ee;
+      --history-bg: #f8faff;
+      --history-border: #dce5fb;
       --danger: #dc3545;
       --shadow: 0 18px 40px rgba(79, 70, 229, 0.12);
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --field-bg: #111827;
+      --field-focus-bg: #0f172a;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --label: #cbd5e1;
+      --label-hover: #f8fafc;
+      --primary: #6366f1;
+      --primary-strong: #4f46e5;
+      --border: #334155;
+      --field-border: #475569;
+      --history-bg: #111827;
+      --history-border: #334155;
+      --danger: #f87171;
+      --shadow: 0 18px 40px rgba(2, 6, 23, 0.45);
     }
 
     * {
@@ -43,6 +69,14 @@
       padding: 28px;
     }
 
+    .header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
     h2 {
       margin: 0;
       font-size: 1.8rem;
@@ -50,7 +84,7 @@
     }
 
     .subtitle {
-      margin: 8px 0 24px;
+      margin: 8px 0 0;
       color: var(--muted);
     }
 
@@ -78,14 +112,14 @@
     label {
       font-size: 0.88rem;
       font-weight: 600;
-      color: #374151;
+      color: var(--label);
     }
 
     input,
     textarea {
       width: 100%;
-      border: 1px solid #cfd9ee;
-      background: #f9fbff;
+      border: 1px solid var(--field-border);
+      background: var(--field-bg);
       border-radius: 10px;
       padding: 11px 12px;
       color: var(--text);
@@ -98,7 +132,7 @@
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
-      background: #fff;
+      background: var(--field-focus-bg);
     }
 
     .inline-group {
@@ -113,7 +147,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #374151;
+      color: var(--label);
       font-size: 0.9rem;
     }
 
@@ -128,7 +162,7 @@
     }
 
     .checkbox-row:hover {
-      color: #1f2937;
+      color: var(--label-hover);
     }
 
     .btn-group {
@@ -162,6 +196,18 @@
 
     .small-btn:hover {
       background: #475569;
+    }
+
+    .theme-toggle {
+      flex: 0 0 auto;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .theme-toggle:hover {
+      background: var(--field-bg);
+      transform: translateY(-1px);
     }
 
     .delete-btn {
@@ -203,7 +249,7 @@
 
     .history {
       margin-top: 24px;
-      border-top: 1px solid #e5eaf7;
+      border-top: 1px solid var(--border);
       padding-top: 20px;
     }
 
@@ -213,8 +259,8 @@
     }
 
     .history-item {
-      background: #f8faff;
-      border: 1px solid #dce5fb;
+      background: var(--history-bg);
+      border: 1px solid var(--history-border);
       border-radius: 12px;
       padding: 14px;
       margin-bottom: 10px;
@@ -222,7 +268,7 @@
 
     .history-item p {
       margin: 10px 0 0;
-      color: #1f2937;
+      color: var(--label-hover);
     }
 
     .history-item small {
@@ -253,6 +299,10 @@
         width: 100%;
       }
 
+      .header-row {
+        flex-direction: column;
+      }
+
       .small-btn {
         width: auto;
       }
@@ -262,8 +312,13 @@
 <body>
 
 <div class="container">
-  <h2>Referral Message Generator</h2>
-  <p class="subtitle">Craft quick, polished LinkedIn referral requests and keep reusable history.</p>
+  <div class="header-row">
+    <div>
+      <h2>Referral Message Generator</h2>
+      <p class="subtitle">Craft quick, polished LinkedIn referral requests and keep reusable history.</p>
+    </div>
+    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
+  </div>
 
   <div class="grid">
     <div class="field">
@@ -326,6 +381,7 @@
 <script>
   let editIndex = null;
   const DEFAULT_RESUME_KEY = "defaultResumeLink";
+  const THEME_KEY = "referralMessageTheme";
 
   async function shortenUrl(url) {
     const trimmedUrl = url.trim();
@@ -380,7 +436,7 @@
 
     const resumeLink = useTinyUrl ? await shortenUrl(resume) : resume.trim();
 
-    const rawMessage = `Hi ${name},\n\nI came across the ${role} role at ${company} (Job ID: ${jobId}). I’d really appreciate it if you could refer me for the position.\n\nResume link: ${resumeLink}\n\nThanks!\n[Your Name]`;
+    const rawMessage = `Hi ${name},\n\nI came across the ${role} role at ${company} (Job ID: ${jobId}). I’d really appreciate it if you could refer me for the position.\n\nResume link: ${resumeLink}\n\nThanks!`;
     const message = fitToCharacterLimit(rawMessage, 300);
 
     const outputElement = document.getElementById("output");
@@ -470,7 +526,20 @@
     const output = document.getElementById("output").value;
     const charCount = document.getElementById("charCount");
     charCount.textContent = `${output.length}/300 characters`;
-    charCount.style.color = output.length > 300 ? "#dc3545" : "#6b7280";
+    charCount.style.color = output.length > 300 ? "var(--danger)" : "var(--muted)";
+  }
+
+  function setTheme(theme) {
+    const normalizedTheme = theme === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", normalizedTheme);
+    document.getElementById("themeToggle").textContent = normalizedTheme === "dark" ? "☀️ Light" : "🌙 Dark";
+    localStorage.setItem(THEME_KEY, normalizedTheme);
+  }
+
+  function getInitialTheme() {
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    if (savedTheme) return savedTheme;
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
 
   function clearValidationStyles() {
@@ -534,6 +603,11 @@
     updateCharacterCount();
   }
 
+  document.getElementById("themeToggle").addEventListener("click", () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+    setTheme(currentTheme === "dark" ? "light" : "dark");
+  });
+
   document.getElementById("output").addEventListener("input", updateCharacterCount);
   document.getElementById("useDefaultResume").addEventListener("change", (event) => {
     const resumeInput = document.getElementById("resume");
@@ -554,6 +628,7 @@
     }
   });
 
+  setTheme(getInitialTheme());
   document.getElementById("defaultResume").value = getDefaultResumeLink();
   renderHistory();
   updateCharacterCount();
